@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    @apply bg-ink font-sans text-cream antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: #d4ad63;
+    color: #080808;
+  }
+
+  :focus-visible {
+    outline: 2px solid #d4ad63;
+    outline-offset: 4px;
+  }
+}
+
+@layer components {
+  .skip-link {
+    @apply absolute left-4 top-[-100px] z-[100] bg-gold px-4 py-2 text-ink;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+  }
+
+  /* Zoom discreto da fotografia do cartão, somente com mouse e sem alterar o tamanho do cartão. */
+  .card-photo {
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (hover: hover) {
+    .group:hover .card-photo {
+      transform: scale(1.03);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
