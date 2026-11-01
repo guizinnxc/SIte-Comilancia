@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "framer-motion";
 import { galleryPhotos as gallery } from "../content/images";
 import type { GalleryCategory, GalleryItem } from "../types";
 import { EASE } from "../lib/motion";
+import { trapTab } from "../lib/trapTab";
 import { ChevronIcon, CloseIcon } from "./Icons";
 import { SafeImage } from "./SafeImage";
 import { Reveal, SectionHeading } from "./ui";
@@ -25,11 +26,12 @@ const filters: { value: Filter; label: string }[] = [
 ];
 
 // Ritmo do mosaico: os tamanhos alternam para criar composição editorial.
+// O ciclo fecha as linhas nas duas grades, de 2 e de 6 colunas, sem deixar células vazias.
 const tileSpans = [
   "col-span-2 row-span-2 md:col-span-3",
   "md:col-span-3",
-  "md:col-span-2",
-  "md:col-span-2",
+  "md:col-span-3",
+  "col-span-2 md:col-span-2",
   "col-span-2 md:col-span-4",
 ];
 
@@ -68,13 +70,15 @@ function rowDelays(elements: HTMLElement[]) {
 
 export function Gallery() {
   const [filter, setFilter] = useState<Filter>("todos");
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  // A foto aberta é guardada pelo id: o índice muda com o filtro e apontaria para outra fotografia.
+  const [openId, setOpenId] = useState<string | null>(null);
   const [reveals, setReveals] = useState<Reveals>({});
   const revealsRef = useRef<Reveals>({});
   const observerRef = useRef<IntersectionObserver | null>(null);
   const visible = filter === "todos" ? gallery : gallery.filter((item) => item.category === filter);
+  const openIndex = visible.findIndex((item) => item.id === openId);
 
-  const closeLightbox = useCallback(() => setOpenIndex(null), []);
+  const closeLightbox = useCallback(() => setOpenId(null), []);
 
   // Atualiza a referência e o estado juntos, para que a observação nunca revele a mesma foto duas vezes.
   const addReveals = useCallback((entries: Reveals) => {
@@ -151,7 +155,7 @@ export function Gallery() {
                   aria-pressed={active}
                   onClick={() => {
                     setFilter(option.value);
-                    setOpenIndex(null);
+                    setOpenId(null);
                   }}
                   className={`px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors duration-500 ease-editorial ${
                     active ? "bg-gold text-ink" : "border border-cream/20 text-cream/70 hover:border-gold hover:text-gold"
@@ -164,10 +168,11 @@ export function Gallery() {
           </div>
         </div>
 
-        <motion.ul
-          layout
-          className="mt-16 grid auto-rows-[200px] grid-cols-2 gap-3 md:auto-rows-[260px] md:grid-cols-6 md:gap-5"
-        >
+        {/*
+         * As fotos que saem são retiradas do fluxo e ancoradas nesta lista, por isso ela é posicionada.
+         * O z-index as mantém visíveis até o fim do fade, quando a próxima seção sobe com a grade mais curta.
+         */}
+        <ul className="relative z-10 mt-16 grid auto-rows-[200px] grid-cols-2 gap-3 md:auto-rows-[260px] md:grid-cols-6 md:gap-5">
           <AnimatePresence mode="popLayout">
             {visible.map((item, index) => (
               <GalleryTile
@@ -175,23 +180,23 @@ export function Gallery() {
                 item={item}
                 span={tileSpans[index % tileSpans.length] ?? ""}
                 revealAt={reveals[item.id]}
-                onOpen={() => setOpenIndex(index)}
+                onOpen={() => setOpenId(item.id)}
                 onFocusReveal={revealNow}
                 observe={observe}
                 unobserve={unobserve}
               />
             ))}
           </AnimatePresence>
-        </motion.ul>
+        </ul>
       </div>
 
       <AnimatePresence>
-        {openIndex !== null && visible[openIndex] && (
+        {openIndex >= 0 && (
           <Lightbox
             key="lightbox"
             items={visible}
             index={openIndex}
-            onIndexChange={setOpenIndex}
+            onIndexChange={(next) => setOpenId(visible[next]?.id ?? null)}
             onClose={closeLightbox}
           />
         )}
@@ -214,8 +219,13 @@ interface GalleryTileProps {
  * Fotografia da galeria, com três camadas que não disputam transformações: a entrada (opacidade e deslocamento),
  * a acomodação da imagem dentro da moldura (escala 1.04 → 1.0) e o zoom discreto do hover, só com mouse.
  */
-function GalleryTile({ item, span, revealAt, onOpen, onFocusReveal, observe, unobserve }: GalleryTileProps) {
+// O AnimatePresence em modo popLayout mede cada item pela referência, por isso o encaminhamento.
+const GalleryTile = forwardRef<HTMLLIElement, GalleryTileProps>(function GalleryTile(
+  { item, span, revealAt, onOpen, onFocusReveal, observe, unobserve },
+  ref,
+) {
   const reduce = useReducedMotion();
+  const isPresent = useIsPresent();
   const wrapperRef = useRef<HTMLDivElement>(null);
   // Com redução de movimento ou sem IntersectionObserver, a fotografia aparece diretamente.
   const shown = reduce || !canObserve || revealAt !== undefined;
@@ -229,12 +239,14 @@ function GalleryTile({ item, span, revealAt, onOpen, onFocusReveal, observe, uno
     return () => unobserve(element);
   }, [observe, unobserve]);
 
+  // Só a posição é animada: o tamanho muda na hora, sem deformar a fotografia. A foto que sai deixa de receber cliques.
   return (
     <motion.li
-      layout
+      ref={ref}
+      layout="position"
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: reduce ? 0 : 0.6, ease: EASE }}
-      className={span}
+      className={isPresent ? span : `${span} pointer-events-none`}
     >
       <div ref={wrapperRef} data-reveal-id={item.id} className="h-full w-full">
         <motion.div
@@ -274,7 +286,7 @@ function GalleryTile({ item, span, revealAt, onOpen, onFocusReveal, observe, uno
       </div>
     </motion.li>
   );
-}
+});
 
 interface LightboxProps {
   items: GalleryItem[];
@@ -286,8 +298,11 @@ interface LightboxProps {
 function Lightbox({ items, index, onIndexChange, onClose }: LightboxProps) {
   const item = items[index];
   const total = items.length;
+  const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const reduce = useReducedMotion();
+  // Durante o fade de saída o diálogo segue montado, mas já não responde ao teclado nem ao mouse.
+  const isPresent = useIsPresent();
 
   // Trava a rolagem, move o foco para o botão de fechar e devolve o foco à foto de origem ao sair.
   useEffect(() => {
@@ -302,14 +317,17 @@ function Lightbox({ items, index, onIndexChange, onClose }: LightboxProps) {
   }, []);
 
   useEffect(() => {
+    if (!isPresent) return;
+
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
       if (event.key === "ArrowRight") onIndexChange((index + 1) % total);
       if (event.key === "ArrowLeft") onIndexChange((index - 1 + total) % total);
+      if (dialogRef.current) trapTab(event, [...dialogRef.current.querySelectorAll<HTMLElement>("button")]);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [index, total, onClose, onIndexChange]);
+  }, [index, total, isPresent, onClose, onIndexChange]);
 
   if (!item) return null;
 
@@ -317,6 +335,7 @@ function Lightbox({ items, index, onIndexChange, onClose }: LightboxProps) {
 
   return (
     <motion.div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label="Visualização da fotografia"
@@ -325,7 +344,9 @@ function Lightbox({ items, index, onIndexChange, onClose }: LightboxProps) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5, ease: EASE }}
       onClick={onClose}
-      className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-ink/95 p-4 backdrop-blur-sm md:p-10"
+      className={`fixed inset-0 z-[60] flex flex-col items-center justify-center bg-ink/95 p-4 backdrop-blur-sm md:p-10 ${
+        isPresent ? "" : "pointer-events-none"
+      }`}
     >
       <button
         ref={closeRef}

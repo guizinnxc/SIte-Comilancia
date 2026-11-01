@@ -146,7 +146,7 @@ interface ButtonProps {
 const variants: Record<ButtonVariant, string> = {
   gold: "bg-gold text-ink hover:bg-champagne",
   dark: "bg-ink text-cream hover:bg-graphite",
-  outline: "border border-current bg-transparent hover:bg-current/10",
+  outline: "border border-current bg-transparent hover:bg-[color-mix(in_srgb,currentColor_10%,transparent)]",
 };
 
 /* Botão editorial: texto em caixa-alta, espaçamento generoso e hover discreto. */

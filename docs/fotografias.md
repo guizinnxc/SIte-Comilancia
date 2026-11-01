@@ -12,7 +12,8 @@ As imagens ficam em `public/images`, uma pasta por seção. O mapeamento de cada
 | `japonesa/` | Gastronomia (japonesa) e galeria | `sushi-prato-da-casa.webp`, `sushi-sake.webp` |
 | `sobremesas/` | Gastronomia (sobremesas) | `torta-maca-canela.webp` |
 | `ambiente/` | Galeria: salão e ambiente | **vazia**: falta fotografia oficial |
-| `galeria/` | Galeria e seção "Experiência" | `saladas-antepasto.webp` (Experiência), `couve-linguica-carne.webp`, `carne-queijo-tomate.webp`, `torradas-tomate.webp`, `ovos-quiche-linguica.webp`, `sobremesa-morango.webp`, `nhoque-ragu-manjericao.webp` |
+| `galeria/` | Galeria | `saladas-antepasto.webp`, `couve-linguica-carne.webp`, `carne-queijo-tomate.webp`, `torradas-tomate.webp`, `ovos-quiche-linguica.webp`, `sobremesa-morango.webp`, `nhoque-ragu-manjericao.webp` |
+| `public/images/` | Imagem de compartilhamento (Open Graph e dados estruturados) | `og-cover.jpg`: recorte de 1200 × 630 da fotografia de abertura |
 
 ## Pendências
 

@@ -21,11 +21,6 @@ export interface GastronomyItem {
   menuLink?: { label: string; href: string };
 }
 
-export interface ExperienceItem {
-  title: string;
-  description: string;
-}
-
 export type GalleryCategory = "ambiente" | "buffet" | "japonesa" | "sobremesas";
 
 export interface GalleryItem {

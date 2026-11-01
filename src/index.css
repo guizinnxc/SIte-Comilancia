@@ -5,8 +5,12 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    /* Referência do useScroll do Framer Motion, que mede as seções a partir da raiz. */
+    position: relative;
     scroll-behavior: smooth;
     scroll-padding-top: 6rem;
+    /* Reserva o espaço da barra de rolagem: a página não pula quando o menu ou o lightbox a travam. */
+    scrollbar-gutter: stable;
   }
 
   body {

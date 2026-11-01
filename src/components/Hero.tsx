@@ -78,7 +78,7 @@ export function Hero() {
 
       <motion.div
         style={{ y: reduce ? 0 : copyY, opacity: reduce ? 1 : copyOpacity }}
-        className="relative mx-auto w-full max-w-5xl px-6 pb-16 pt-32 text-center md:px-10 md:pb-24"
+        className="relative mx-auto w-full max-w-5xl px-6 pb-20 pt-32 text-center md:px-10 md:pb-24"
       >
         <motion.div variants={staggerContainer} initial={reduce ? false : "hidden"} animate="show">
           <motion.p

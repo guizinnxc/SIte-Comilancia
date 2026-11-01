@@ -90,14 +90,15 @@ export function Location() {
   );
 }
 
+// O ícone fica dentro do dt porque cada grupo da lista só pode conter dt e dd como filhos diretos.
 function InfoRow({ icon, label, children }: { icon: ReactNode; label: string; children: ReactNode }) {
   return (
-    <div className="flex gap-5 py-6">
-      <span className="mt-1 shrink-0 text-gold">{icon}</span>
-      <div>
-        <dt className="mb-2 text-[11px] font-medium uppercase tracking-eyebrow text-gold">{label}</dt>
-        <dd className="space-y-1 text-lg leading-relaxed text-cream/90">{children}</dd>
-      </div>
+    <div className="relative py-6 pl-10">
+      <dt className="mb-2 text-[11px] font-medium uppercase tracking-eyebrow text-gold">
+        <span className="absolute left-0 top-7">{icon}</span>
+        {label}
+      </dt>
+      <dd className="space-y-1 text-lg leading-relaxed text-cream/90">{children}</dd>
     </div>
   );
 }

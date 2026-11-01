@@ -11,7 +11,7 @@ Enquanto um arquivo não existir, ou com redução de movimento ativa no sistema
 
 ## Como adicionar os vídeos
 
-1. Copie os dois arquivos para esta pasta, com exatamente esses nomes.
+1. Copie os dois arquivos para `public/videos/`, com exatamente esses nomes.
 2. Use H.264 (MP4), sem áudio (o Hero também usa `muted`), e tamanho razoável (cerca de 8 MB ou menos por arquivo). Sem som, use: `ffmpeg -i original.mp4 -an -c:v libx264 -crf 26 -preset slow -movflags +faststart comilancia-fundo-desktop.mp4`.
 3. Desktop deve ser horizontal (16:9). O vídeo vertical não deve ser ampliado para preencher o desktop.
 4. Não use links temporários do Instagram.

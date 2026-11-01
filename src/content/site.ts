@@ -7,7 +7,7 @@
  */
 
 import { images } from "./images";
-import type { ExperienceItem, GastronomyItem, MenuCategory, NavItem, Review } from "../types";
+import type { GastronomyItem, MenuCategory, NavItem, Review } from "../types";
 
 export { images };
 
@@ -88,25 +88,6 @@ export const gastronomy: GastronomyItem[] = [
  * aparece só na seção de gastronomia japonesa (menuLink).
  */
 export const menuCategories: MenuCategory[] = [];
-
-export const experience: ExperienceItem[] = [
-  {
-    title: "Ambiente acolhedor",
-    description: "Um salão confortável, pensado para desacelerar o almoço.",
-  },
-  {
-    title: "Atendimento próximo",
-    description: "Uma recepção atenciosa, com o carinho que caracteriza a casa.",
-  },
-  {
-    title: "Tradição",
-    description: "Desde 1991 construindo história com dedicação a cada cliente.",
-  },
-  {
-    title: "Momentos em família",
-    description: "Um lugar para reunir quem você ama em volta da mesa.",
-  },
-];
 
 /*
  * Avaliações: somente avaliações reais, verificadas e com fonte identificada.

@@ -2,9 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { navigation, restaurant } from "../content/site";
 import { EASE } from "../lib/motion";
+import { trapTab } from "../lib/trapTab";
+import { useMediaQuery } from "../lib/useMediaQuery";
 import { CloseIcon, InstagramIcon, MenuIcon, PhoneIcon, PinIcon, WhatsAppIcon } from "./Icons";
 import { Logo } from "./ui";
 
+// Mesmo ponto de quebra xl do Tailwind: daqui para cima, a navegação fica no cabeçalho e o painel some.
+const DESKTOP_QUERY = "(min-width: 1280px)";
 // Depois desta rolagem (em px), o cabeçalho ganha fundo sólido e a marca diminui.
 const SCROLL_THRESHOLD = 80;
 // Uma seção vira ativa quando o topo dela passa desta fração da altura da tela.
@@ -36,6 +40,8 @@ function readActiveSection(): string {
 /* A rolagem iniciada por um clique terminou quando a seção alcançou a altura de rolagem. */
 function hasReachedSection(id: string) {
   if (isAtBottom()) return true;
+  // A primeira seção não desce até a altura de rolagem: chegar ao topo da página já basta.
+  if (id === FIRST_SECTION) return window.scrollY <= 0;
   const element = document.getElementById(id);
   if (!element) return true;
   const offset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
@@ -47,6 +53,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState(FIRST_SECTION);
   const reduce = useReducedMotion();
+  const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const wasOpenRef = useRef(false);
@@ -77,6 +84,11 @@ export function Header() {
     };
   }, []);
 
+  // Ao girar a tela ou ampliar a janela, o painel some: sem fechar o menu, a rolagem da página ficaria travada.
+  useEffect(() => {
+    if (isDesktop) setMenuOpen(false);
+  }, [isDesktop]);
+
   // Trava a rolagem do fundo, fecha com Esc e mantém o foco dentro do painel enquanto o menu estiver aberto.
   useEffect(() => {
     if (!menuOpen) return;
@@ -89,22 +101,8 @@ export function Header() {
         setMenuOpen(false);
         return;
       }
-      if (event.key !== "Tab" || !toggleRef.current || !panelRef.current) return;
-
-      const focusable = [
-        toggleRef.current,
-        ...panelRef.current.querySelectorAll<HTMLElement>("a[href], button"),
-      ];
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (!first || !last) return;
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
+      if (!toggleRef.current || !panelRef.current) return;
+      trapTab(event, [toggleRef.current, ...panelRef.current.querySelectorAll<HTMLElement>("a[href], button")]);
     };
 
     window.addEventListener("keydown", onKeyDown);
@@ -132,6 +130,7 @@ export function Header() {
     window.clearTimeout(releaseTimerRef.current);
     releaseTimerRef.current = window.setTimeout(() => {
       clickedRef.current = null;
+      setActive(readActiveSection());
     }, CLICK_RELEASE_MS);
   };
 

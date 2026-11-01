@@ -11,13 +11,13 @@ export function Footer() {
 
   return (
     <footer className="border-t border-gold/15 bg-ink text-cream/70">
-      <div className="mx-auto grid max-w-7xl gap-14 px-6 py-20 md:grid-cols-12 md:px-10 lg:px-12">
-        <div className="md:col-span-4">
+      <div className="mx-auto grid max-w-7xl gap-14 px-6 py-20 md:grid-cols-2 md:px-10 lg:grid-cols-12 lg:px-12">
+        <div className="lg:col-span-4">
           <Logo />
           <p className="mt-8 max-w-xs font-script text-3xl leading-snug text-gold">{restaurant.tagline}</p>
         </div>
 
-        <nav aria-label="Rodapé" className="md:col-span-2 md:col-start-6">
+        <nav aria-label="Rodapé" className="lg:col-span-2">
           <p className="text-[11px] font-medium uppercase tracking-eyebrow text-gold">Navegação</p>
           <ul className="mt-6 space-y-3 text-sm">
             {navigation.map((item) => (
@@ -30,7 +30,7 @@ export function Footer() {
           </ul>
         </nav>
 
-        <div className="space-y-3 text-sm leading-relaxed md:col-span-3">
+        <div className="space-y-3 text-sm leading-relaxed lg:col-span-3">
           <p className="text-[11px] font-medium uppercase tracking-eyebrow text-gold">Localização</p>
           <p className="mt-6">{restaurant.address.full}</p>
           <p className="pt-2 text-[11px] font-medium uppercase tracking-eyebrow text-gold">Funcionamento</p>
@@ -39,7 +39,7 @@ export function Footer() {
           </p>
         </div>
 
-        <div className="md:col-span-3">
+        <div className="lg:col-span-3">
           <p className="text-[11px] font-medium uppercase tracking-eyebrow text-gold">Contato</p>
           {/* Canais de contato em ícones: área de toque de 44 px, ícones de 24 px, sem caixas decorativas. */}
           <ul className="-ml-3 mt-6 flex flex-wrap items-center gap-1">

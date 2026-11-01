@@ -12,8 +12,9 @@ const CARD_STAGGER = 0.1;
 export function Gastronomy() {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
 
+  // Sem padding inferior: a Galeria vem em seguida, no mesmo fundo, e o padding superior dela faz a separação.
   return (
-    <section id="gastronomia" className="bg-ink py-28 md:py-40">
+    <section id="gastronomia" className="bg-ink pt-28 md:pt-40">
       <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
         <Reveal>
           <SectionHeading

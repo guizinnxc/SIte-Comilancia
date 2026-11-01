@@ -39,10 +39,6 @@ export const images = {
     src: "/images/sobremesas/torta-maca-canela.webp",
     alt: "Torta de maçã com canela, sobremesa do Restaurante Comilância",
   },
-  experience: {
-    src: "/images/galeria/saladas-antepasto.webp",
-    alt: "Saladas e antepastos servidos no buffet do Restaurante Comilância",
-  },
 } satisfies Record<string, ImageRef | null>;
 
 // Galeria: somente fotografias reais. Ambiente aparece quando houver foto do salão.
@@ -108,6 +104,13 @@ export const galleryPhotos: GalleryItem[] = [
     src: "/images/galeria/nhoque-ragu-manjericao.webp",
     alt: "Nhoque com ragu e manjericão, servido no Comilância",
     caption: "Massas",
+    category: "buffet",
+  },
+  {
+    id: "saladas-antepasto",
+    src: "/images/galeria/saladas-antepasto.webp",
+    alt: "Saladas e antepastos servidos no buffet do Restaurante Comilância",
+    caption: "Saladas e antepastos",
     category: "buffet",
   },
 ];

@@ -18,9 +18,11 @@ Fonte: https://www.instagram.com/restaurantecomilancia/
 
 ## Como receber as fotos
 
-Coloque os originais em `originais-recebidos/` (JPG, PNG ou HEIC, na maior resolução disponível). Depois, a conversão para WebP e a distribuição por seção são feitas a partir dessa pasta.
+Coloque os originais em `fotos-instagram/originais-recebidos/` (JPG, PNG ou HEIC, na maior resolução disponível). Essa pasta fica fora de `public/` porque tudo o que está em `public/` é publicado com o site. Depois, a conversão para WebP e a distribuição por seção são feitas a partir dessa pasta.
 
 ## Pastas por seção
+
+As pastas abaixo ficam em `fotos-instagram/`.
 
 | Pasta | Uso no site |
 | --- | --- |
@@ -29,7 +31,6 @@ Coloque os originais em `originais-recebidos/` (JPG, PNG ou HEIC, na maior resol
 | `buffet/` | Buffet e culinária brasileira |
 | `japonesa/` | Gastronomia japonesa: sushis e combinados |
 | `sobremesas/` | Sobremesas e doces |
-| `ambiente-experiencia/` | Seção "Além da gastronomia": salão, mesas, acolhimento |
 | `galeria/ambiente`, `galeria/buffet`, `galeria/japonesa`, `galeria/sobremesas` | Galeria, por categoria |
 
 ## Posts identificados na grade (somente referência)
